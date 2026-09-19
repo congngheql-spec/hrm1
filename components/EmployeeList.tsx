@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Plus, Download, Upload, Trash2, Search, Filter, RefreshCcw, MoreHorizontal, LayoutTemplate, GitMerge } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Plus, Download, Upload, Trash2, Search, Filter, RefreshCcw, MoreHorizontal, LayoutTemplate, GitMerge, AlertCircle } from 'lucide-react';
 import { EmployeeDetailModal } from './EmployeeDetailModal';
 import { MergeEmployeeModal } from './MergeEmployeeModal';
 
@@ -18,6 +18,26 @@ export const EmployeeList: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
   const [selectedCccds, setSelectedCccds] = useState<string[]>([]);
+  const [showMergeLimitTooltip, setShowMergeLimitTooltip] = useState(false);
+  const mergeTooltipRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (selectedCccds.length <= 2) {
+      setShowMergeLimitTooltip(false);
+    }
+  }, [selectedCccds.length]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (mergeTooltipRef.current && !mergeTooltipRef.current.contains(event.target as Node)) {
+        setShowMergeLimitTooltip(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleSelect = (cccd: string) => {
     setSelectedCccds(prev => 
@@ -56,13 +76,59 @@ export const EmployeeList: React.FC = () => {
                 <button className="bg-[#F3F4F6] border border-gray-200 text-gray-400 px-3 py-1.5 rounded text-[13px] flex items-center gap-1.5 cursor-not-allowed">
                    <Trash2 className="w-4 h-4" /> Xóa
                 </button>
-                <button 
-                  onClick={() => setIsMergeModalOpen(true)}
-                  disabled={selectedCccds.length !== 2}
-                  className={`border px-3 py-1.5 rounded text-[13px] flex items-center gap-1.5 transition-colors ${selectedCccds.length === 2 ? 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50' : 'bg-[#F3F4F6] border-gray-200 text-gray-400 cursor-not-allowed'}`}
-                >
-                   <GitMerge className="w-4 h-4" /> Gộp Hồ sơ
-                </button>
+                <div ref={mergeTooltipRef} className="relative inline-flex items-center">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      if (selectedCccds.length === 2) {
+                        setIsMergeModalOpen(true);
+                      } else if (selectedCccds.length > 2) {
+                        setShowMergeLimitTooltip(prev => !prev);
+                      }
+                    }}
+                    className={`border px-3 py-1.5 rounded text-[13px] flex items-center gap-1.5 transition-colors ${
+                      selectedCccds.length === 2 
+                        ? 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 cursor-pointer' 
+                        : 'bg-[#F3F4F6] border-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    <GitMerge className="w-4 h-4" /> 
+                    <span>Gộp Hồ sơ</span>
+                    {selectedCccds.length > 2 && (
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowMergeLimitTooltip(prev => !prev);
+                        }}
+                        className="text-amber-500 hover:text-amber-600 cursor-pointer p-0.5 rounded-full hover:bg-amber-100 transition-colors inline-flex items-center ml-0.5"
+                        title="Nhấn để xem giới hạn gộp hồ sơ"
+                      >
+                        <AlertCircle className="w-3.5 h-3.5" />
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Tooltip / Popover khi nhấn vào biểu tượng chấm than */}
+                  {showMergeLimitTooltip && selectedCccds.length > 2 && (
+                    <div className="absolute top-full left-0 mt-2 z-50 bg-[#1F2937] text-white text-[12px] font-normal px-3 py-2 rounded-md shadow-xl border border-gray-700 whitespace-nowrap flex items-center gap-2">
+                      <div className="absolute -top-1 left-5 w-2 h-2 bg-[#1F2937] rotate-45 border-l border-t border-gray-700" />
+                      <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span>Giới hạn: Chỉ chọn đúng 2 hồ sơ để Gộp</span>
+                      <button 
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowMergeLimitTooltip(false);
+                        }}
+                        className="ml-1 text-gray-400 hover:text-white p-0.5 text-xs leading-none"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </div>
              </div>
              <div className="flex items-center gap-3">
                 <div className="relative">
