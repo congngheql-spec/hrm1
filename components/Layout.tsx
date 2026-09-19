@@ -41,7 +41,16 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView = 'categor
               <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600 rounded-r-md"></div>
             )}
             <Users className="w-5 h-5 mr-3" />
-            <span className="text-sm font-medium">Hồ sơ Nhân sự</span>
+            <span className="text-sm font-medium">Danh sách Nhân sự</span>
+          </div>
+          <div 
+            onClick={() => onNavigate?.('labor_list')}
+            className={`flex items-center pl-11 pr-3 py-2 rounded-md relative cursor-pointer transition-colors ${currentView === 'labor_list' ? 'bg-[#EBF5FF] text-blue-600' : 'text-gray-500 hover:bg-gray-100'}`}
+          >
+            {currentView === 'labor_list' && (
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600 rounded-r-md"></div>
+            )}
+            <span className="text-[13px] font-medium">Hồ sơ Hợp đồng</span>
           </div>
           <div 
             onClick={() => onNavigate?.('department_list')}
@@ -109,7 +118,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView = 'categor
               <h1 className="text-xl font-bold text-gray-800 mr-8">Dịch vụ sửa chữa</h1>
             )}
             {currentView === 'employee_list' && (
-              <h1 className="text-xl font-bold text-gray-800 mr-8">Hồ sơ Nhân sự</h1>
+              <h1 className="text-xl font-bold text-gray-800 mr-8">Danh sách Nhân sự</h1>
+            )}
+            {currentView === 'labor_list' && (
+              <h1 className="text-xl font-bold text-gray-800 mr-8">Hồ sơ Hợp đồng</h1>
             )}
             {currentView === 'department_list' && (
               <h1 className="text-xl font-bold text-gray-800 mr-8">Bộ phận</h1>
@@ -130,7 +142,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView = 'categor
               <h1 className="text-xl font-bold text-gray-800 mr-8">Cấu trúc Lương</h1>
             )}
             
-            {['employee_list', 'department_list', 'position_list', 'salary_grade_list', 'contract_type_list', 'salary_rule_group', 'salary_structure'].includes(currentView) ? (
+            {['employee_list', 'labor_list', 'department_list', 'position_list', 'salary_grade_list', 'contract_type_list', 'salary_rule_group', 'salary_structure'].includes(currentView) ? (
               <div className="flex-1 flex justify-end gap-3 mr-6 items-center">
                 <button className="bg-[#1A4B9F] text-white px-4 py-1.5 rounded-[4px] text-sm font-medium flex items-center gap-2">
                   <Tag className="w-4 h-4 fill-white" />

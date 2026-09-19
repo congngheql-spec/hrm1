@@ -136,14 +136,15 @@ export const PersonnelCostEstimation: React.FC<PersonnelCostEstimationProps> = (
 
   // Algorithm to distribute budget
   const suggestedAllocation = useMemo(() => {
-    const totalPeople = Object.values(positionQuantities).reduce((sum, qty) => sum + qty, 0);
+    const totalPeople = (Object.values(positionQuantities) as number[]).reduce((sum: number, qty: number) => sum + qty, 0);
     if (effectiveTargetBudget <= 0 || totalPeople === 0) return [];
 
     const budgetPerPerson = effectiveTargetBudget / totalPeople;
     const allocation = [];
     let remainingBudget = effectiveTargetBudget;
 
-    for (const [code, qty] of Object.entries(positionQuantities)) {
+    for (const [code, qtyVal] of Object.entries(positionQuantities)) {
+      const qty = Number(qtyVal);
       if (qty <= 0) continue;
       
       const positionData = MOCK_SALARY_DATA[code];

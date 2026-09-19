@@ -18,6 +18,7 @@ import { RepairService } from './components/RepairService';
 import { EventsModule } from './components/EventsModule';
 import { RegistrationApprovalModule } from './components/RegistrationApprovalModule';
 import { EmployeeList } from './components/EmployeeList';
+import { LaborList } from './components/LaborList';
 import { DepartmentList } from './components/DepartmentList';
 import { PositionList } from './components/PositionList';
 import { SalaryGradeList } from './components/SalaryGradeList';
@@ -28,7 +29,7 @@ import { OrderProvider } from './context/OrderContext';
 
 const App: React.FC = () => {
   const [productType, setProductType] = useState<ProductType>(ProductType.SPARE_PART);
-  const [currentView, setCurrentView] = useState<'categories' | 'spare_parts' | 'omnichannel' | 'online_ordering' | 'commercial_sales' | 'purchase_orders' | 'supplier_homepage' | 'marketplace' | 'repair_service' | 'events' | 'registration_approval' | 'employee_list' | 'department_list' | 'position_list' | 'salary_grade_list' | 'contract_type_list' | 'salary_rule_group' | 'salary_structure'>('employee_list');
+  const [currentView, setCurrentView] = useState<'categories' | 'spare_parts' | 'omnichannel' | 'online_ordering' | 'commercial_sales' | 'purchase_orders' | 'supplier_homepage' | 'marketplace' | 'repair_service' | 'events' | 'registration_approval' | 'employee_list' | 'labor_list' | 'department_list' | 'position_list' | 'salary_grade_list' | 'contract_type_list' | 'salary_rule_group' | 'salary_structure'>('employee_list');
   const [selectedSupplierId, setSelectedSupplierId] = useState<number | null>(null);
 
   return (
@@ -58,6 +59,8 @@ const App: React.FC = () => {
           <RepairService />
         ) : currentView === 'employee_list' ? (
           <EmployeeList />
+        ) : currentView === 'labor_list' ? (
+          <LaborList />
         ) : currentView === 'department_list' ? (
           <DepartmentList />
         ) : currentView === 'position_list' ? (
